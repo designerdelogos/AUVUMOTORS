@@ -1,0 +1,92 @@
+-- ============================================================
+-- DEGRA STORE — Schema MySQL
+-- ============================================================
+SET NAMES utf8mb4;
+
+CREATE TABLE IF NOT EXISTS admins (
+  id VARCHAR(20) PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(150) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS platforms (
+  id VARCHAR(20) PRIMARY KEY,
+  name VARCHAR(80) NOT NULL,
+  slug VARCHAR(80) NOT NULL UNIQUE,
+  color VARCHAR(20) NOT NULL DEFAULT '#111111',
+  active TINYINT(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS categories (
+  id VARCHAR(20) PRIMARY KEY,
+  name VARCHAR(80) NOT NULL,
+  slug VARCHAR(80) NOT NULL UNIQUE,
+  description TEXT,
+  icon VARCHAR(40),
+  active TINYINT(1) NOT NULL DEFAULT 1,
+  `order` INT NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS products (
+  id VARCHAR(20) PRIMARY KEY,
+  name VARCHAR(200) NOT NULL,
+  slug VARCHAR(200) NOT NULL UNIQUE,
+  short_description VARCHAR(300),
+  description TEXT,
+  price DECIMAL(10,2) NOT NULL DEFAULT 0,
+  previous_price DECIMAL(10,2) NULL,
+  image_url TEXT NOT NULL,
+  make VARCHAR(80),
+  model VARCHAR(120),
+  year_model VARCHAR(20),
+  mileage INT NULL,
+  transmission VARCHAR(40),
+  fuel VARCHAR(40),
+  color VARCHAR(40),
+  category_id VARCHAR(20),
+  platform_id VARCHAR(20),
+  affiliate_url TEXT NOT NULL,
+  badge VARCHAR(60),
+  featured TINYINT(1) NOT NULL DEFAULT 0,
+  offer TINYINT(1) NOT NULL DEFAULT 0,
+  active TINYINT(1) NOT NULL DEFAULT 1,
+  clicks INT NOT NULL DEFAULT 0,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX (category_id),
+  INDEX (platform_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS product_images (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  product_id VARCHAR(20) NOT NULL,
+  image_url TEXT NOT NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX (product_id),
+  INDEX (sort_order)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS banners (
+  id VARCHAR(20) PRIMARY KEY,
+  image_url TEXT NOT NULL,
+  alt VARCHAR(200),
+  active TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS click_logs (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  product_id VARCHAR(20) NOT NULL,
+  platform_id VARCHAR(20),
+  device VARCHAR(20) NOT NULL DEFAULT 'desktop',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX (product_id),
+  INDEX (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS settings (
+  `key` VARCHAR(60) PRIMARY KEY,
+  value TEXT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
